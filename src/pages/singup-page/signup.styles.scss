@@ -45,6 +45,13 @@
 		border: 1px solid #B3B3B3;
 		margin-bottom: 15px;
 		border-radius: 4px;
+
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 24px;
+		padding-left: 10px;
 	}
 
 	&__common{
@@ -52,7 +59,34 @@
 	}
 
 	&__buttonholder{
+		width: 85%;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-top: 40px;
+	}
 
+	&__small{
+		display: flex;
+		align-items: center;
+		margin-right: 45px;
+	}
+
+	&__circle{
+		width: 12px;
+		height: 12px;
+		background-color: #097981;
+		border-radius: 50%;
+		margin-right: 20px;
+	}
+
+	&__circle-big, &__circle-big1, &__circle-big2{
+		width: 21px;
+		height: 21px;
+	}
+
+	&__circle-display{
+		visibility: hidden;
 	}
 
 	&__button{
@@ -64,7 +98,6 @@
 		border: none;
 		cursor: pointer;
 		color: #FFFFFF;
-		margin-top: 40px;
 	}
 	&__span{
 		font-family: 'Poppins';
@@ -72,7 +105,21 @@
 		font-weight: 400;
 		font-size: 16px;
 		line-height: 24px;
-		margin-bottom: 50px;
-		margin-top: 80px;
+		margin-bottom: 40px;
+		margin-top: 40px;
 	}
+
+	&__display{
+		display: none;
+	}
+}
+
+::placeholder{
+	font-family: 'Balsamiq Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 24px;
+	padding-left: 10px;
+	color: #666666;
 }
