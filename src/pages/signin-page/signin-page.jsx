@@ -1,11 +1,17 @@
 import "./signin-page.styles.scss";
-import drugCart from "../../assets/logo/drug-cart.jpg";
 import {useState} from "react";
 import {Link} from "react-router-dom";
+import google from "../../assets/logo/google.png";
+import UnisachLogo from "../../components/unisachlogo/unisachlogo.component.jsx";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
-const SignInPage = () =>{
+const SignInPage = ({setUserData}) =>{
 	const [userName, setUserName] = useState("");
 	const [password, setPassword] = useState("");
+	const [rememberPassword, setRememberPassword] = useState(false);
+
+	const navigate = useNavigate();
 
 	const onSignInInput = (event) =>{
 		const {name, value} = event.target; 
@@ -13,40 +19,66 @@ const SignInPage = () =>{
 		else{setPassword(value)}
 	}
 
-	// console.log(userName);
-	// console.log(password);
+	const onhandleCheckBoxChange = (event) =>{
+		console.log(event.target.checked);
+	}
 
 
 	const onSignInButton = (event) =>{
-		// console.log(event.target);	
+		axios.post("https://unisach-dev.onrender.com/api/users/auth/login",{
+				email: userName,
+			 	password: password
+				})
+			.then(response => {
+				if(response){
+					setUserData(response.data.data);
+					navigate("/")
+				}
+			})
+			.catch(err => console.log(err.response.data.message));	
 	}
+	console.log(rememberPassword);
+
 	return(
 		<div className="signin-page__container">
 			<div className="signin-page__box">
-				<img src={drugCart} alt="drug cart" className="signin-page__picture"/>
 				<div className="signin-page__data">
-					<h2 className="signin-page__heading">Login to your account</h2>
-					<div className="signin-page__inputs">
-						<input onChange={(event) => onSignInInput(event)} placeholder="Username" type="email" name="email" 
-						className="signin-page__input"/>
-						<input onChange={(event) => onSignInInput(event)} placeholder="Password" type="password" name="password" 
-						className="signin-page__input"/>
-					</div>
-					<div className="signin-page__check-box__container">
-						<div className="signin-page__inputcontainer">
-							<input onChange={(event) => onSignInInput(event)} type="checkbox" className="signin-page__check-box"/>
-							<span className="signin-page__remember">Remember me</span>
+					<UnisachLogo/>
+					<div className="signin-page__welcome">
+						<h2 className="signin-page__heading">Welcome back</h2>
+						<div className="signin-page__inputs">
+							<div className="signin-page__inputs-container signin-page__inputs-margin">
+								<input onChange={(event) => onSignInInput(event)} type="email" name="email" 
+								className="signin-page__input"/>
+								<label className="signin-page__label">Email adress</label>
+							</div>
+							<div className="signin-page__inputs-container">
+								<input onChange={(event) => onSignInInput(event)} type="password" name="password" 
+								className="signin-page__input"/>
+								<label className="signin-page__label signin-page__label-password">Password</label>
+							</div>
 						</div>
-						<div className="forgot-password__container">
-							<span className="signin-page__forgot">Forgot your password?</span>
+						<div className="signin-page__check-box__container">
+							<div className="signin-page__inputcontainer">
+								<input onChange={(event) => onhandleCheckBoxChange(event)} type="checkbox" className="signin-page__check-box"/>
+								<span className="signin-page__remember">Remember me</span>
+							</div>
+							<div className="forgot-password__container">
+								<Link to="/forgot-password" className="signin-page__forgot">Forgot your password?</Link>
+							</div>
 						</div>
-					</div>
-					<button onClick={(event) => onSignInButton(event)} className="signin-page__button1">Sign in</button>
-					<div className="signin-page__text">
-						<p className="signin-page__paragraph">Don't have an account? </p>
-						<Link to="/signup" className="signin-page__btn2holder">
-							<button className="signin-page__button2">Sign up</button>
-						</Link>
+						<button onClick={(event) => onSignInButton(event)} className="signin-page__button1">Sign in</button>
+						<div className="signin-page__text">
+							<p className="signin-page__paragraph">Don't have an account? </p>
+							<Link to="/signup" className="signin-page__btn2holder">
+								<button className="signin-page__button2">Sign up</button>
+							</Link>
+						</div>
+						<div className="signin-page__hr-container">
+							<hr className="signin-page__hr"/> <span className="signin-page__hr-span">OR</span>
+							<hr className="signin-page__hr"/>
+						</div>
+						<button className="signin-page__google"><img className="signin-page__google-img" src={google} alt=""/>Continue with google</button>
 					</div>
 				</div>
 			</div>

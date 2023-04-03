@@ -1,5 +1,4 @@
-.signup-container{
-	position: relative;
+.forgot-confirmemail{
 
 	&__background{
 		background: rgba(8, 123, 131, 0.47);
@@ -8,7 +7,7 @@
 		padding-top: 60px;
 	}
 
-	&__input-header{
+	&__ash{
 		position: absolute;
 		top: 60%;
 		left: 50%;
@@ -22,59 +21,55 @@
 		justify-content: center;
 		align-items: center;
 
-		max-width: 590px;
+		width: 590px;
+		padding-top: 30px;
+		padding-bottom: 30px;
 	}
 
-	&__header{
+	&__h1{
 		font-family: 'Poppins';
 		font-style: normal;
-		font-weight: 400;
+		font-weight: 500;
 		font-size: 24px;
 		line-height: 24px;
-		color: #000000;
+		margin-bottom: 20px;
 	}
 
-	&__inputholder{
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		padding-bottom: 20px;
-		padding-top: 20px;
-	}
-	&__input-margin{
-		margin-right: 20px;
+	&__p{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 500;
+		font-size: 16px;
+		line-height: 24px;
+
 		margin-bottom: 20px;
 	}
 
 	&__input{
-		width: 250px;
+		background: #FFFFFF;
+		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+		border-radius: 5px;
+		border: none;
+		width: 350px;
 		height: 40px;
-		border: 1px solid #000000;
-		border-radius: 8px;
+
+		margin-bottom: 30px;
 	}
 
 	&__button{
-		width: 200px;
-		height: 50px;
-		margin-bottom: 20px;
 		background: #C86810;
 		border-radius: 8px;
-		border: none;
+		color: #FFFFFF;
 		font-family: 'Poppins';
 		font-style: normal;
 		font-weight: 400;
-		font-size: 16px;
+		font-size: 18px;
 		line-height: 24px;
-		color: #FFFFFF;
+		border: none;
+		width: 200px;
+		height: 45px;
 		cursor: pointer;
-	}
 
-	&__error{
-		color: red;
-		padding-bottom: 20px;
-	}
-
-	&__error-display{
-		visibility: hidden;
+		margin-bottom: 30px;
 	}
 }

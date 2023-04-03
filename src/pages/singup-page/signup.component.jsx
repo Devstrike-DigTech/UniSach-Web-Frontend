@@ -1,143 +1,130 @@
 import {useState} from "react";
 import "./signup.styles.scss";
-import ProfileAddress from "../../components/profileaddress/profile-address.component.jsx";
-import AddImage from "../../components/add-image/add-image.component.jsx";
+import UnisachLogo from "../../components/unisachlogo/unisachlogo.component.jsx";
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 
-const SignUpPage = () =>{
+const SignUpPage = ({email, setEmail}) =>{	
+	const navigate = useNavigate();
 
-	const createAccountDetails = {firstName: "", lastName:"", email: "", phone:"", password:"", confirmPassword:""};
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [password, setPassword] = useState("");
+	const [confirmPassword, setConfirmPassword] = useState("");
+	const [phone, setPhone] = useState("");
 
-	const inputDetails = [
-		{id:"qwe", name: "firstName", placeholder: "First Name", className: "signup-container__common", value:""}, 
-		{id:"asr", name: "lastName", placeholder:"last Name", className: "", value:""},
-		{id:"gft", name:"email",placeholder:"Email", className:"signup-container__common", value:""},
-		{id:"kgy", name: "phone", placeholder:"Phone Number",className:"", value:""},
-		{id:"csr", name: "password", placeholder: "Password", className:"signup-container__common", value:""},
-		{id:"tyu", name:"confirmPassword", placeholder:"Confirm Password", className:"", value:""}
-		];
+	const [signUpError, setSignUpError] = useState("sign up error");
+	const [displaySignUpError, setDisplaySignUpError] = useState("signup-container__error-display");
+ 
+	const inputParameters = [{id: 1, type:"text", className:"signup-container__input-margin", name: "first Name", placeholder:"First Name"},
+		{id: 2, type:"text", className:"", name: "last Name", placeholder:"Last Name"},
+		{id: 3, type:"email", className:"signup-container__input-margin", name: "email", placeholder:"Email"},
+		{id: 4, type:"tel", className:"", name: "phone number", placeholder:"Phone Number"},
+		{id: 5, type:"password", className:"signup-container__input-margin", name: "password", placeholder:"Password"},
+		{id: 6, type:"password", className:"", name: "confirmPassword", placeholder: "Confirm Password"}];
 
-	const [count, setCount] =useState(1);
-	const [createAccountDetailsValues, setCreateAccountDetails] = useState(createAccountDetails);
-	const [inputDetailsValues, setInputDetailValues] = useState(inputDetails);
-	// FOR CHANGING TEXT
-	const [heading, setHeading] = useState("Please Enter Details to Register");
-	// FOR Changing CSS
-	const [classDisplay, setClassDisplay] = useState("");
-	const [classDisplayAddress, setClassDisplayAddress] = useState("profile-address__display");
-	const [circleDisplay, setCircleDisplay] = useState("signup-container__circle-display");
-	const [address, setAddress] = useState("");
-	const [others, setOthers] = useState("");
-	const [circleBig, setCircleBig] = useState("");
-	const [circleBig1, setCircleBig1] = useState("");
-	const [circleBig2, setCircleBig2] = useState("");
+	// Validating the Email address
 
-
-	// Handles the changes in the input
-	const onInputChange = (event) =>{
-		const {name, value} = event.target;
-
-		setCreateAccountDetails({
-			...createAccountDetailsValues,
-			[name]:value,
-		})
-
-		const newaccountdetails = inputDetailsValues.map(el =>{
-			if(el.name ===  name){el.value = value}
-				return el;
-		})
-
-		setInputDetailValues(newaccountdetails);
+	const validateEmail = (mail) =>{
+		let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;// eslint-disable-line
+		if(mail.match(mailformat)){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 
-	// UPDATES THE INPUTDETAILVALUES
-	const changePlaceHolder =(placeholders) =>{
-		const inputFields = inputDetailsValues.map(el =>{
-			placeholders.map(pl =>{
-				if(el.id === pl.id){
-					el.placeholder = pl.name;
-					el.value =""
-				}
-				return(
-					el
-				)
-			})
-			return(
-				el
-			)
-		})
-		setInputDetailValues(inputFields);
+	const onInputChange = (event) =>{
+		const {name, value} = event.target;
+		if(name === "first Name"){
+			setFirstName(value);
+		}else if(name === "last Name"){
+			setLastName(value);
+		}else if(name === "email"){
+			setEmail(value)
+		}else if(name === "phone number"){
+			setPhone(value)
+		}else if(name === "password"){
+			setPassword(value)
+		}else if(name === "confirmPassword"){
+			setConfirmPassword(value)
+		}
+	}
+
+	const handleSignUpError =(errorMessage) => {
+		setDisplaySignUpError("");
+		setSignUpError(errorMessage);
 	}
 	
 	// handles the clicking of the button on register page
-	const onButtonClick = (event) =>{
-		let placeholders;
-		setCount(count+1);
+	const onSignUpButtonSubmit = (event) =>{
+		event.preventDefault();
 
-		const {password, confirmPassword} = createAccountDetailsValues;
-
-		if(password !== confirmPassword || password===""){
-			setCount(1);
+		if(firstName === "" || lastName === "" || password === "" || confirmPassword === "" || email === "" || phone === ""){
+			handleSignUpError("please fill all inpput fields");
 			return;
 		}
 
-		if(count === 1){
-			placeholders = [{id:"qwe", name: "Pharmacy Name"}, {id:"asr",name: "Pharmacy Type"}, {id:"gft", name: "Pharmacy Email"}, 
-							{id:"kgy",name: "Pharmacy Phone No"}, {id:"csr", name: "Pharmacy Motto"}, {id:"tyu", name:"Pharmacy License No"}]
-
-			changePlaceHolder(placeholders);
-
-			setHeading("Register Pharmacy");
-			setClassDisplay("signup-container__display");
-			setClassDisplayAddress("");
-			setCircleDisplay("");
-			setCircleBig("signup-container__circle-big");
-		}
-		else if(count === 2){
-			placeholders = [{id:"qwe", name: "Line 1"}, {id:"asr",name: "Line 2"}, {id:"gft", name: "District"}, 
-							{id:"kgy",name: "City"}, {id:"csr", name: "LGA"}, {id:"tyu", name:"State"}]
-
-			changePlaceHolder(placeholders);
-
-			setAddress("profile-address__common");
-			setCircleBig1("signup-container__circle-big");
-			setCircleBig("");
-
+		if(!validateEmail(email)){
+			handleSignUpError("invalid email address");
+			return;
 		}
 
-		else if(count === 3){
-			setOthers("profile-address__others");
-			setCircleBig2("signup-container__circle-big");
-			setCircleBig1("");
+		if(password !== confirmPassword){
+			handleSignUpError("passwords do not match");
+			console.log("Equal");
+			return;
+		}
+
+		if(password.length < 8){
+			handleSignUpError("passwords must be up to 8 characters");
+			return;
 		}
 		
-		// console.log(count);
+		setDisplaySignUpError("signup-container__error-display");
+
+		axios.post("https://unisach-dev.onrender.com/api/users/auth/signup",{
+				first_name: firstName,
+			 	last_name: lastName,
+			 	password: password,
+			 	email: email,
+			 	phone: phone,
+			 	role: "Pharmacist"
+				})
+			.then(response => {
+				if(response.data.data){
+					navigate("/signup/token")
+				}
+			})
+			.catch(err => {
+				if(err.response.data.message){
+					handleSignUpError(err.response.data.message);
+				}
+			});
+		
 	}
 
 	return(
 		<div className="signup-container">
-			<h2 className="signup-container__text">{heading}</h2>
-			<div className="signup-container__margin">
-				<span className={`signup-container__span ${classDisplay}`}>Create an Account</span>
-				<ProfileAddress others={others} address={address} classDisplayAddress={classDisplayAddress}/>
-				<div className="signup-container__account">
-					{
-						inputDetailsValues.map(el =>{
-							const {id, name, placeholder, className, value} = el;
-							return(
-								<input key={id} onChange={(event) => onInputChange(event)}  type="text" className={`signup-container__input ${className}`}
-								name={name} placeholder={placeholder} value={value}/>
-							)
-						})
-					}
-					<div className="signup-container__buttonholder">
-						<div className={`signup-container__small ${circleDisplay}`}>
-							<span className={`signup-container__circle ${circleBig}`}></span>
-							<span className={`signup-container__circle ${circleBig1}`}></span>
-							<span className={`signup-container__circle ${circleBig2}`}></span>
-						</div>
-						<button onClick = {(event) => onButtonClick(event)} className="signup-container__button">Continue</button>
-					</div>
+			<UnisachLogo/>
+			<div className="signup-container__background">
+			<form onSubmit={(e) => onSignUpButtonSubmit(e)} className="signup-container__input-header">
+				<h1 className="signup-container__header">Enter details to create account</h1>
+				<div className="signup-container__inputholder">
+				{
+					inputParameters.map(el => {
+						const {placeholder, name, id, className, type} = el;
+						return(
+							<input onChange={(event) =>onInputChange(event)} key={id} className={`signup-container__input ${className}`}
+							 name={name} type={type} placeholder={placeholder}/>
+						)
+					})
+				}
 				</div>
+				<button className="signup-container__button" type="submit">Continue</button>
+				<span className={`signup-container__error ${displaySignUpError}`}>{signUpError}</span>
+			</form>
 			</div>
 		</div>
 	)

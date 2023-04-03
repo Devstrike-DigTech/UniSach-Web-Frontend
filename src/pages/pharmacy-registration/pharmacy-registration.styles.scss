@@ -1,5 +1,4 @@
-.signup-container{
-	position: relative;
+.pharmacy-registration{
 
 	&__background{
 		background: rgba(8, 123, 131, 0.47);
@@ -8,7 +7,7 @@
 		padding-top: 60px;
 	}
 
-	&__input-header{
+	&__ash{
 		position: absolute;
 		top: 60%;
 		left: 50%;
@@ -25,25 +24,30 @@
 		max-width: 590px;
 	}
 
-	&__header{
+	&__h1{
 		font-family: 'Poppins';
 		font-style: normal;
 		font-weight: 400;
-		font-size: 24px;
+		font-size: 25px;
 		line-height: 24px;
 		color: #000000;
 	}
 
-	&__inputholder{
+	&__inputs{
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		padding-bottom: 20px;
 		padding-top: 20px;
 	}
-	&__input-margin{
+
+	&__margin{
 		margin-right: 20px;
 		margin-bottom: 20px;
+	}
+
+	&__input-container{
+
 	}
 
 	&__input{
@@ -67,14 +71,5 @@
 		line-height: 24px;
 		color: #FFFFFF;
 		cursor: pointer;
-	}
-
-	&__error{
-		color: red;
-		padding-bottom: 20px;
-	}
-
-	&__error-display{
-		visibility: hidden;
 	}
 }
