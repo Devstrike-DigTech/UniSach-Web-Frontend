@@ -4,17 +4,15 @@ import UnisachLogo from "../../components/unisachlogo/unisachlogo.component.jsx"
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
-const SignUpPage = ({email, setEmail}) =>{	
+const SignUpPage = ({setLoader, showNotificationError, showNotificationSuccess}) =>{	
 	const navigate = useNavigate();
 
 	const [firstName, setFirstName] = useState("");
+	const [email, setEmail] =useState("");
 	const [lastName, setLastName] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [phone, setPhone] = useState("");
-
-	const [signUpError, setSignUpError] = useState("sign up error");
-	const [displaySignUpError, setDisplaySignUpError] = useState("signup-container__error-display");
  
 	const inputParameters = [{id: 1, type:"text", className:"signup-container__input-margin", name: "first Name", placeholder:"First Name"},
 		{id: 2, type:"text", className:"", name: "last Name", placeholder:"Last Name"},
@@ -51,38 +49,35 @@ const SignUpPage = ({email, setEmail}) =>{
 			setConfirmPassword(value)
 		}
 	}
-
-	const handleSignUpError =(errorMessage) => {
-		setDisplaySignUpError("");
-		setSignUpError(errorMessage);
-	}
 	
 	// handles the clicking of the button on register page
 	const onSignUpButtonSubmit = (event) =>{
 		event.preventDefault();
 
-		if(firstName === "" || lastName === "" || password === "" || confirmPassword === "" || email === "" || phone === ""){
-			handleSignUpError("please fill all inpput fields");
+		if(firstName === "" || lastName === "" || password === "" 
+			|| confirmPassword === "" || email === "" || phone === ""){
+			showNotificationError("please fill all the input fields");
 			return;
 		}
 
 		if(!validateEmail(email)){
-			handleSignUpError("invalid email address");
+			showNotificationError("invalid email address");
 			return;
 		}
 
 		if(password !== confirmPassword){
-			handleSignUpError("passwords do not match");
-			console.log("Equal");
+			showNotificationError("passwords do not match");
 			return;
 		}
 
 		if(password.length < 8){
-			handleSignUpError("passwords must be up to 8 characters");
+			showNotificationError("passwords must be up to 8 characters");
 			return;
 		}
 		
-		setDisplaySignUpError("signup-container__error-display");
+		// setDisplaySignUpError("signup-container__error-display");
+
+		setLoader(true);
 
 		axios.post("https://unisach-dev.onrender.com/api/users/auth/signup",{
 				first_name: firstName,
@@ -94,12 +89,16 @@ const SignUpPage = ({email, setEmail}) =>{
 				})
 			.then(response => {
 				if(response.data.data){
-					navigate("/signup/token")
+					navigate("/signup/token");
+					showNotificationSuccess("check your email for otp");
+					localStorage.setItem("email", JSON.stringify(email));
+					setLoader(false);
 				}
 			})
 			.catch(err => {
+				setLoader(false);
 				if(err.response.data.message){
-					handleSignUpError(err.response.data.message);
+					showNotificationError(err.response.data.message)
 				}
 			});
 		
@@ -123,7 +122,6 @@ const SignUpPage = ({email, setEmail}) =>{
 				}
 				</div>
 				<button className="signup-container__button" type="submit">Continue</button>
-				<span className={`signup-container__error ${displaySignUpError}`}>{signUpError}</span>
 			</form>
 			</div>
 		</div>

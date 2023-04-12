@@ -1,15 +1,18 @@
 import "./signin-page.styles.scss";
 import {useState} from "react";
 import {Link} from "react-router-dom";
-import google from "../../assets/logo/google.png";
 import UnisachLogo from "../../components/unisachlogo/unisachlogo.component.jsx";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
-const SignInPage = ({setUserData}) =>{
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+
+const SignInPage = ({setUserData, setLoader, showNotificationError,showNotificationSuccess}) =>{
 	const [userName, setUserName] = useState("");
 	const [password, setPassword] = useState("");
 	const [rememberPassword, setRememberPassword] = useState(false);
+
+	const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
 
 	const navigate = useNavigate();
 
@@ -25,20 +28,60 @@ const SignInPage = ({setUserData}) =>{
 
 
 	const onSignInButton = (event) =>{
+
+		if(userName==="" || password===""){
+			showNotificationError("please fill in your credentials");
+			return;
+		}
+
+		setLoader(true);
+
 		axios.post("https://unisach-dev.onrender.com/api/users/auth/login",{
 				email: userName,
 			 	password: password
 				})
 			.then(response => {
-				if(response){
-					setUserData(response.data.data);
-					navigate("/")
+				if(response.data.data){
+					if(response.data.data.message === "Please verify your email to continue your Registration process"){
+						showNotificationSuccess(response.data.data.message);
+					}
+					else{
+						showNotificationSuccess("login successful");
+						localStorage.setItem("user", JSON.stringify(response.data.data));
+						navigate("/");
+					};
+					setLoader(false);
 				}
 			})
-			.catch(err => console.log(err.response.data.message));	
+			.catch(err => {
+				showNotificationError(err.response.data.message);
+				setLoader(false)
+			});	
 	}
-	console.log(rememberPassword);
 
+	// signin with google
+
+	const onHandleGoogleResponse = (response) => {
+		
+		setLoader(true);
+
+		axios.post("https://unisach-dev.onrender.com/api/users/auth/signin/google",{
+	      token: response.credential,
+	      role: "Pharmacist"
+	      })
+	    .then(response =>{
+	      if(response.data.data){
+	      	navigate("/")
+	      	setLoader(false);
+	      	showNotificationSuccess("signin successful");
+	      	localStorage.setItem("user", JSON.stringify(response.data.data));
+	      }
+	    })
+	    .catch(err => {
+	      showNotificationError("Unable to signin with google")
+	    })
+	}
+	
 	return(
 		<div className="signin-page__container">
 			<div className="signin-page__box">
@@ -78,8 +121,11 @@ const SignInPage = ({setUserData}) =>{
 							<hr className="signin-page__hr"/> <span className="signin-page__hr-span">OR</span>
 							<hr className="signin-page__hr"/>
 						</div>
-						<button className="signin-page__google"><img className="signin-page__google-img" src={google} alt=""/>Continue with google</button>
-					</div>
+							<GoogleOAuthProvider clientId={clientId}>
+								<GoogleLogin onSuccess={credentialResponse => { onHandleGoogleResponse(credentialResponse)}} 
+								onError={() => {showNotificationError('Login with google Failed')}}/>
+						    </GoogleOAuthProvider>
+						</div>
 				</div>
 			</div>
 		</div>
