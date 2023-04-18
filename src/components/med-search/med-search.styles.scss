@@ -1,0 +1,39 @@
+.med-search{
+
+	text-align: center; 
+	padding-bottom: 10px;
+	width: 93.6%;
+	margin-top: 10px;
+
+	&__wrapper{
+		background: #FCFCFC;
+		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+		width: 1000px;
+		margin: 0 auto;
+		margin-right: -0.1px;
+		margin-top: -37px;
+		padding-bottom: 5px;
+		padding-top: 30px;
+	}
+
+	&__h2{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 600;
+		font-size: 40px;
+		line-height: 40px;
+		color: #C86810;
+	}
+
+	&__p{
+		font-family: 'Poppins';
+		font-style: normal;
+		font-weight: 400;
+		font-size: 23px;
+		line-height: 52px;
+	}
+
+	&__img{
+		width: 100%;
+	}
+}
